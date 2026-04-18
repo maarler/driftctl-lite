@@ -1,0 +1,5 @@
+# Example .driftignore file
+aws_s3_bucket/legacy-bucket
+aws_instance/*
+# Ignore all old lambda functions
+aws_lambda_function/deprecated-fn
