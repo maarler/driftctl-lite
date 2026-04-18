@@ -41,3 +41,14 @@ func (s *State) ResourceMap() map[string]Resource {
 	}
 	return m
 }
+
+// ResourcesByType returns all resources matching the given type.
+func (s *State) ResourcesByType(resourceType string) []Resource {
+	var result []Resource
+	for _, r := range s.Resources {
+		if r.Type == resourceType {
+			result = append(result, r)
+		}
+	}
+	return result
+}
