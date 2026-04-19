@@ -47,6 +47,11 @@ func Compute(declared, live map[string]interface{}) []FieldDiff {
 	return diffs
 }
 
+// HasDrift returns true if there are any differences between declared and live.
+func HasDrift(declared, live map[string]interface{}) bool {
+	return len(Compute(declared, live)) > 0
+}
+
 func unionKeys(a, b map[string]interface{}) []string {
 	seen := map[string]struct{}{}
 	for k := range a {
