@@ -70,3 +70,19 @@ func TestEvaluate_MultipleViolations(t *testing.T) {
 		t.Fatalf("expected 2 violations, got %d", len(violations))
 	}
 }
+
+func TestEvaluate_EmptyResults(t *testing.T) {
+	rules := []policy.Rule{{ResourceType: "aws_vpc", DisallowMissing: true}}
+	violations := policy.Evaluate(nil, rules)
+	if len(violations) != 0 {
+		t.Fatalf("expected no violations for empty results, got %d", len(violations))
+	}
+}
+
+func TestEvaluate_EmptyRules(t *testing.T) {
+	results := []drift.Result{makeResult("vpc-1", "aws_vpc", drift.StatusMissing)}
+	violations := policy.Evaluate(results, nil)
+	if len(violations) != 0 {
+		t.Fatalf("expected no violations for empty rules, got %d", len(violations))
+	}
+}
