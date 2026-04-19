@@ -70,3 +70,24 @@ func TestCache_InvalidateMissing(t *testing.T) {
 		t.Errorf("Invalidate on missing key should not error: %v", err)
 	}
 }
+
+func TestCache_OverwriteExisting(t *testing.T) {
+	c := cache.New(tempDir(t))
+
+	_ = c.Set("live", map[string]string{"aws_s3_bucket.old": "present"})
+	_ = c.Set("live", map[string]string{"aws_s3_bucket.new": "present", "aws_instance.web": "running"})
+
+	entry, err := c.Get("live")
+	if err != nil {
+		t.Fatalf("Get: %v", err)
+	}
+	if entry == nil {
+		t.Fatal("expected entry, got nil")
+	}
+	if len(entry.Resources) != 2 {
+		t.Errorf("expected 2 resources after overwrite, got %d", len(entry.Resources))
+	}
+	if _, ok := entry.Resources["aws_s3_bucket.old"]; ok {
+		t.Error("old resource should not be present after overwrite")
+	}
+}
