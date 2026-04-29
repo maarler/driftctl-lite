@@ -3,6 +3,7 @@
 package label
 
 import (
+	"errors"
 	"strings"
 
 	"driftctl-lite/internal/drift"
@@ -15,6 +16,7 @@ type Rule struct {
 }
 
 // ParseRule parses a label selector string into a Rule.
+// Returns an error if the key portion is empty (e.g. input is "=value").
 func ParseRule(s string) (Rule, error) {
 	if s == "" {
 		return Rule{}, nil
@@ -23,6 +25,9 @@ func ParseRule(s string) (Rule, error) {
 	r := Rule{Key: strings.TrimSpace(parts[0])}
 	if len(parts) == 2 {
 		r.Value = strings.TrimSpace(parts[1])
+	}
+	if r.Key == "" {
+		return Rule{}, errors.New("label: rule key must not be empty")
 	}
 	return r, nil
 }
